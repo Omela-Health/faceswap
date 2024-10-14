@@ -14,7 +14,7 @@ def get_version():
 
 
 setup(
-    name="Omela FaceSwap",
+    name="faceswap",
     version=get_version(),
     author="Omela Health",
     author_email="info@omelahealth.com",
