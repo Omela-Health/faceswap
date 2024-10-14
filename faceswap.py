@@ -34,7 +34,7 @@ class FaceSwapper:
         # Check if the inswapper model already exists
         if not os.path.exists("inswapper_128.onnx"):
             os.system(
-                "wget https://github.com/deepinsight/insightface/releases/download/0.7.0/inswapper_128.onnx -P ./"
+                "wget https://huggingface.co/ezioruan/inswapper_128.onnx/resolve/main/inswapper_128.onnx -P ./"
             )
 
         # Download the GFPGAN models
