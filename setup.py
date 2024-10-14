@@ -10,9 +10,14 @@ def get_requirements():
         return [line.strip() for line in f if line.strip() and not line.startswith("#")]
 
 
+def get_version():
+    with open("VERSION", "r") as f:
+        return f.read().strip()
+
+
 setup(
-    name="FaceSwap Demo",
-    version=__version__,
+    name="Omela FaceSwap",
+    version=get_version(),
     author="Omela Health",
     author_email="info@omelahealth.com",
     description="A face swapping tool",
