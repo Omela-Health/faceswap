@@ -30,3 +30,13 @@ FaceSwap Demo is a Python-based tool for swapping faces in images. It utilizes a
 
 ## Usage
 To use the FaceSwap Demo, run the following command:
+
+```
+python faceswap.py -source ./test/profile.jpg -target ./test/raw_image_0.png
+```
+
+Replace `<source_image_path>` and `<target_image_path>` with the paths to your source and target images.
+
+## License
+This project is licensed under the MIT License. See the LICENSE file for more details.
+
