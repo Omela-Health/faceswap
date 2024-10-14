@@ -7,8 +7,6 @@ import argparse
 from gfpgan import GFPGANer
 import os
 
-__version__ = "0.0.1"
-
 
 class FaceSwapper:
 
