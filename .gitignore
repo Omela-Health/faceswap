@@ -166,3 +166,4 @@ gfpgan/weights/
 
 # Downloaded models
 inswapper_128.onnx
+.DS_Store

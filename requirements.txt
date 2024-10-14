@@ -1,6 +1,6 @@
 absl-py==2.1.0
 albucore==0.0.17
-albumentations==1.4.18
+albumentations==1.4.2
 annotated-types==0.7.0
 certifi==2024.8.30
 charset-normalizer==3.4.0
