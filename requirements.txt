@@ -10,7 +10,6 @@ cycler==0.12.1
 Cython==3.0.11
 easydict==1.13
 eval_type_backport==0.2.0
--e git+ssh://git@github.com/Omela-Health/faceswap.git@ddf61926c759c471a35b69fc027fc6070ec059a0#egg=FaceSwap_Demo
 facexlib==0.3.0
 filelock==3.16.1
 filterpy==1.4.5
