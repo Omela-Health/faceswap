@@ -129,6 +129,9 @@ class FaceSwapper:
         # Enhance the result
         enhanced_result = self.enhance_image(result)
 
+        # Convert the result to a RGB
+        enhanced_result = cv2.cvtColor(enhanced_result, cv2.COLOR_BGR2RGB)
+
         print("Face swap process completed.")
 
         return enhanced_result
