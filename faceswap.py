@@ -126,16 +126,12 @@ class FaceSwapper:
             )
             return
 
-        # Save the raw result
-        cv2.imwrite("raw_result.jpg", result)
-        print("Raw face swap result saved as 'raw_result.jpg'")
-
         # Enhance the result
-        enhanced_result = self.enhance_image("raw_result.jpg")
-        cv2.imwrite("enhanced_result.jpg", enhanced_result)
-        print("Enhanced face swap result saved as 'enhanced_result.jpg'")
+        enhanced_result = self.enhance_image(result)
 
         print("Face swap process completed.")
+
+        return enhanced_result
 
 
 if __name__ == "__main__":
@@ -150,4 +146,6 @@ if __name__ == "__main__":
 
     face_swapper = FaceSwapper()
     face_swapper.download_models()
-    face_swapper.process_images(args.source, args.target)
+
+    img = face_swapper.process_images(args.source, args.target)
+    cv2.imwrite("result.jpg", img)
