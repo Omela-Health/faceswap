@@ -10,23 +10,6 @@ import os
 
 class FaceSwapper:
 
-    def __init__(self):
-        # Initialize the FaceAnalysis module
-        self.app = FaceAnalysis(name="buffalo_l")
-        self.app.prepare(ctx_id=0, det_size=(512, 512))
-
-        # Load the face swapper
-        self.swapper = insightface.model_zoo.get_model(
-            "inswapper_128.onnx", download=False, download_zip=False
-        )
-
-        self.gfpgan = GFPGANer(
-            model_path="gfpgan/weights/GFPGANv1.4.pth",
-            upscale=4,
-            arch="clean",
-            channel_multiplier=2,
-        )
-
     def download_models(self):
         """Download the models for face swap and face enhancement"""
 
@@ -60,7 +43,34 @@ class FaceSwapper:
                     "wget https://github.com/TencentARC/GFPGAN/releases/download/v1.3.4/RestoreFormer.pth -P ./gfpgan/weights"
                 )
 
+        # Initialize the FaceAnalysis module
+        self.app = FaceAnalysis(name="buffalo_l")
+        self.app.prepare(ctx_id=0, det_size=(512, 512))
+
+        # Load the face swapper
+        self.swapper = insightface.model_zoo.get_model(
+            "inswapper_128.onnx", download=False, download_zip=False
+        )
+
+        self.gfpgan = GFPGANer(
+            model_path="gfpgan/weights/GFPGANv1.4.pth",
+            upscale=4,
+            arch="clean",
+            channel_multiplier=2,
+        )
+
     def face_swap(self, source_img, target_img):
+
+        # Ensure models are downloaded before proceeding
+        if (
+            not hasattr(self, "app")
+            or not hasattr(self, "swapper")
+            or not hasattr(self, "gfpgan")
+        ):
+            raise RuntimeError(
+                "Models not downloaded. Please run the download_models() method before proceeding."
+            )
+
         # Analyze faces in both images
         source_faces = self.app.get(source_img)
         target_faces = self.app.get(target_img)
@@ -130,4 +140,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     face_swapper = FaceSwapper()
+    face_swapper.download_models()
     face_swapper.process_images(args.source, args.target)
