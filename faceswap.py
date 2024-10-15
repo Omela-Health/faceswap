@@ -54,7 +54,7 @@ class FaceSwapper:
 
         self.gfpgan = GFPGANer(
             model_path="gfpgan/weights/GFPGANv1.4.pth",
-            upscale=4,
+            upscale=2,  # 4 is too much
             arch="clean",
             channel_multiplier=2,
         )
