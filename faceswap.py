@@ -101,8 +101,17 @@ class FaceSwapper:
 
     def process_images(self, source_path, target_path):
         # Load source and target images
-        source_img = cv2.imread(source_path)
-        target_img = cv2.imread(target_path)
+        if isinstance(source_path, str):
+            source_img = cv2.imread(source_path)
+        else:
+            # Assuming source_path is a PIL Image
+            source_img = cv2.cvtColor(np.array(source_path), cv2.COLOR_RGB2BGR)
+
+        if isinstance(target_path, str):
+            target_img = cv2.imread(target_path)
+        else:
+            # Assuming target_path is a PIL Image
+            target_img = cv2.cvtColor(np.array(target_path), cv2.COLOR_RGB2BGR)
 
         if source_img is None or target_img is None:
             print("Error: Failed to load source or target image.")
