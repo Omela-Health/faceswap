@@ -111,9 +111,13 @@ class FaceSwapper:
         # Load source and target images
         if isinstance(source_path, str):
             source_img = cv2.imread(source_path)
+        else:
+            source_img = source_path
 
         if isinstance(target_path, str):
             target_img = cv2.imread(target_path)
+        else:
+            target_img = target_path
 
         if source_img is None or target_img is None:
             print("Error: Failed to load source or target image.")
