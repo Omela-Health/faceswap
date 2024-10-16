@@ -8,6 +8,7 @@ from gfpgan import GFPGANer
 import os
 import requests
 from datetime import datetime
+from PIL import Image
 
 
 class FaceSwapper:
@@ -112,12 +113,14 @@ class FaceSwapper:
         if isinstance(source_path, str):
             source_img = cv2.imread(source_path)
         else:
-            source_img = source_path
+            # Assuming source_path is a PIL Image
+            source_img = np.array(source_path)
 
         if isinstance(target_path, str):
             target_img = cv2.imread(target_path)
         else:
-            target_img = target_path
+            # Assuming target_path is a PIL Image
+            target_img = np.array(target_path)
 
         if source_img is None or target_img is None:
             print("Error: Failed to load source or target image.")
@@ -162,6 +165,8 @@ if __name__ == "__main__":
     face_swapper = FaceSwapper()
     face_swapper.download_models()
 
-    img = face_swapper.process_images(args.source, args.target, enhance=True)
+    loadimage = Image.open(args.source)
+
+    img = face_swapper.process_images(loadimage, args.target, enhance=True)
 
     cv2.imwrite("result.jpg", img)
