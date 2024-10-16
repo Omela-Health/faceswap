@@ -57,7 +57,7 @@ class FaceSwapper:
 
         self.gfpgan = GFPGANer(
             model_path="./gfpgan/weights/GFPGANv1.4.pth",
-            upscale=2,  # 4 is too much
+            upscale=1,  # 4 is too much
             arch="clean",
             channel_multiplier=2,
         )
@@ -102,7 +102,7 @@ class FaceSwapper:
         )
         return output
 
-    def process_images(self, source_path, target_path):
+    def process_images(self, source_path, target_path, enhance=True):
 
         # Print start time
         start_time = datetime.now()
@@ -134,19 +134,24 @@ class FaceSwapper:
             )
             return
 
-        # Enhance the result
-        enhanced_result = self.enhance_image(result)
-
         # Convert the result to a RGB
-        enhanced_result = cv2.cvtColor(enhanced_result, cv2.COLOR_BGR2RGB)
+        result = cv2.cvtColor(result, cv2.COLOR_BGR2RGB)
 
-        print("Face swap process completed.")
+        elapsed_time = datetime.now() - start_time
+        print(f"Swap took {elapsed_time}")
+
+        # Enhance the result
+        if enhance:
+            result = self.enhance_image(result)
+
+            elapsed_time = datetime.now() - start_time
+            print(f"Enhance took {elapsed_time}")
 
         # Print elapsed time
         elapsed_time = datetime.now() - start_time
         print(f"Face swap process completed in {elapsed_time}")
 
-        return enhanced_result
+        return result
 
 
 if __name__ == "__main__":
@@ -162,5 +167,7 @@ if __name__ == "__main__":
     face_swapper = FaceSwapper()
     face_swapper.download_models()
 
-    img = face_swapper.process_images(args.source, args.target)
+    img = face_swapper.process_images(args.source, args.target, enhance=True)
+    # Convert the image from BGR to RGB
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     cv2.imwrite("result.jpg", img)
