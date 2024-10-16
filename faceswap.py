@@ -6,6 +6,8 @@ import numpy as np
 import argparse
 from gfpgan import GFPGANer
 import os
+import requests
+from datetime import datetime
 
 
 class FaceSwapper:
@@ -13,35 +15,36 @@ class FaceSwapper:
     def download_models(self):
         """Download the models for face swap and face enhancement"""
 
+        def download_file(url, filename):
+            response = requests.get(url, stream=True)
+            response.raise_for_status()
+            with open(filename, "wb") as file:
+                for chunk in response.iter_content(chunk_size=8192):
+                    file.write(chunk)
+
         # Download the inswapper model
-        # Check if the inswapper model already exists
         if not os.path.exists("inswapper_128.onnx"):
-            os.system(
-                "wget https://huggingface.co/ezioruan/inswapper_128.onnx/resolve/main/inswapper_128.onnx -P ./"
+            print("Downloading inswapper model...")
+            download_file(
+                "https://huggingface.co/ezioruan/inswapper_128.onnx/resolve/main/inswapper_128.onnx",
+                "inswapper_128.onnx",
             )
 
-        # Download the GFPGAN models
-        # Check if the GFPGAN models already exist
-        if not os.path.exists("gfpgan/weights"):
-            os.system("mkdir -p gfpgan/weights")
+        # Create GFPGAN weights directory
+        os.makedirs("./gfpgan/weights", exist_ok=True)
 
-            # Download the RealESRGAN model
-            if not os.path.exists("gfpgan/weights/realesr-general-x4v3.pth"):
-                os.system(
-                    "wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-general-x4v3.pth -P ./gfpgan/weights"
-                )
+        # Download GFPGAN models
+        models = {
+            "realesr-general-x4v3.pth": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-general-x4v3.pth",
+            "GFPGANv1.4.pth": "https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.4.pth",
+            "RestoreFormer.pth": "https://github.com/TencentARC/GFPGAN/releases/download/v1.3.4/RestoreFormer.pth",
+        }
 
-            # Download the GFPGANv1.4 model
-            if not os.path.exists("gfpgan/weights/GFPGANv1.4.pth"):
-                os.system(
-                    "wget https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.4.pth -P ./gfpgan/weights"
-                )
-
-            # Download the RestoreFormer model
-            if not os.path.exists("gfpgan/weights/RestoreFormer.pth"):
-                os.system(
-                    "wget https://github.com/TencentARC/GFPGAN/releases/download/v1.3.4/RestoreFormer.pth -P ./gfpgan/weights"
-                )
+        for model_name, url in models.items():
+            file_path = f"./gfpgan/weights/{model_name}"
+            if not os.path.exists(file_path):
+                print(f"Downloading {model_name}...")
+                download_file(url, file_path)
 
         # Initialize the FaceAnalysis module
         self.app = FaceAnalysis(name="buffalo_l")
@@ -53,7 +56,7 @@ class FaceSwapper:
         )
 
         self.gfpgan = GFPGANer(
-            model_path="gfpgan/weights/GFPGANv1.4.pth",
+            model_path="./gfpgan/weights/GFPGANv1.4.pth",
             upscale=2,  # 4 is too much
             arch="clean",
             channel_multiplier=2,
@@ -100,6 +103,11 @@ class FaceSwapper:
         return output
 
     def process_images(self, source_path, target_path):
+
+        # Print start time
+        start_time = datetime.now()
+        print(f"Setup started at: {start_time}")
+
         # Load source and target images
         if isinstance(source_path, str):
             source_img = cv2.imread(source_path)
@@ -133,6 +141,10 @@ class FaceSwapper:
         enhanced_result = cv2.cvtColor(enhanced_result, cv2.COLOR_BGR2RGB)
 
         print("Face swap process completed.")
+
+        # Print elapsed time
+        elapsed_time = datetime.now() - start_time
+        print(f"Face swap process completed in {elapsed_time}")
 
         return enhanced_result
 
