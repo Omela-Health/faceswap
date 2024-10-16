@@ -134,9 +134,6 @@ class FaceSwapper:
             )
             return
 
-        # Convert the result to a RGB
-        result = cv2.cvtColor(result, cv2.COLOR_BGR2RGB)
-
         elapsed_time = datetime.now() - start_time
         print(f"Swap took {elapsed_time}")
 
@@ -168,6 +165,5 @@ if __name__ == "__main__":
     face_swapper.download_models()
 
     img = face_swapper.process_images(args.source, args.target, enhance=True)
-    # Convert the image from BGR to RGB
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
     cv2.imwrite("result.jpg", img)
